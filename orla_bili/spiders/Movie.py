@@ -3,15 +3,15 @@ import re
 
 from scrapy.spider import Spider
 from scrapy.http import Request
-from ..items import AnimeItem
+from ..items import MovieItem
 from scrapy.selector import Selector
 from scrapy import log
 
 
-class AnimeSpider(Spider):
-    name = "Anime"
+class MovieSpider(Spider):
+    name = "Movie"
     # allowed_domains = ["bilibili.com"]
-    index_head = 'https://bangumi.bilibili.com/media/web_api/search/result?season_version=-1&area=-1&is_finish=-1&copyright=-1&season_status=-1&season_month=-1&pub_date=-1&style_id=-1&order=3&st=1&sort=0&season_type=1&pagesize=20'
+    index_head = 'https://bangumi.bilibili.com/media/web_api/search/result?area=-1&style_id=-1&year=-1&season_status=-1&order=2&st=2&sort=0&season_type=2&pagesize=20'
     video_head = 'https://www.bilibili.com/bangumi/media/md'
     start_urls = [index_head + '&page=1']
     summary_p = re.compile('"evaluate":"(.*?)",')
@@ -33,13 +33,13 @@ class AnimeSpider(Spider):
 
     def parse_detail(self, response):
         sel = Selector(response)
-        item = AnimeItem()
+        item = MovieItem()
         m = response.meta
         item['image_urls'] = [m.get('cover', '')]
         for name in ['badge', 'badge_type', 'index_show', 'is_finish', 'link', 'media_id', 'season_id',
                      'title']:
             item[name] = m.get(name, None)
-        for name in ['follow','play', 'pub_date', 'pub_real_time', 'renewal_time', 'score', 'type']:
+        for name in ['play', 'pub_date', 'pub_real_time', 'renewal_time', 'score', 'type']:
             item[name] = m['order'].get(name, None)
         item['media_tags'] = sel.xpath('//*[@class="media-tag"]/text()').extract()
         item['num_long_comment'] = sel.xpath(

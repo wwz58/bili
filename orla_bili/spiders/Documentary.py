@@ -10,7 +10,7 @@ from scrapy import log
 
 class DocumentarySpider(Spider):
     name = "Documentary"
-    # allowed_domains = ["bilibili.com"]
+    allowed_domains = ["bilibili.com"]
     index_head = 'https://bangumi.bilibili.com/media/web_api/search/result?style_id=-1&producer_id=-1&year=-1&order=2&st=3&sort=0&season_type=3&pagesize=20'
     video_head = 'https://www.bilibili.com/bangumi/media/md'
     start_urls = [index_head + '&page=1']
